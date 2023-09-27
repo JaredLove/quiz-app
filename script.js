@@ -54,8 +54,19 @@ function checkAnswer(answer) {
     }
 }
 
+function reset() {
+    currentQuestionIndex = 0;
+    resultElement.innerHTML = ""
+    loadQuestion();
+}
+
 function showResult() {
-    resultElement.textContent = `You scored ${score} out of ${quizData.length}!`;
+    resultElement.innerHTML = `You scored ${score} out of ${quizData.length}!
+    <br>
+    Would you like to try again? <button id="resetButton">Reset</button>`;
+
+    const resetButton = document.getElementById("resetButton");
+    resetButton.addEventListener("click", reset);
 }
 
 loadQuestion();
