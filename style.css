@@ -1,5 +1,5 @@
 * {
-
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
     
@@ -14,7 +14,7 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 98vh;
+    height: 90vh;
 }
 .border {
     /* From https://css.glass */
@@ -24,7 +24,8 @@ box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 backdrop-filter: blur(50px);
 -webkit-backdrop-filter: blur(5px);
 border: 1px solid rgba(255, 255, 255, 0.3);
-padding: 200px 200px;
+padding: 150px 200px;
+background-attachment: fixed;
 }
 
 h1 {
@@ -34,9 +35,10 @@ h1 {
     color: #FFFFFF;
 }
 
-#question {
-    font-size: 50px;
-    margin: 10px;
+.question {
+    font-size: 40px;
+    color: #FFFFFF;
+    margin-bottom: 50px;
 }
 
 form span {

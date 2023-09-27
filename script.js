@@ -1,89 +1,112 @@
-const quizData = [
+const quizQuestions = [
     {
-        question: "What is the capital of France?",
-        options: {
-            A: "London",
-            B: "Berlin",
-            C: "Paris"
+        question: "test1",
+        answers: {
+            A: "test1",
+            B: "test1",
+            C: "test1",
+            D: "test1",
         },
-        correctAnswer: "C"
+        correctAnswer: 'A'
     },
     {
-        question: "What is the largest planet in our solar system?",
-        options: {
-            A: "Mars",
-            B: "Jupiter",
-            C: "Earth"
+        question: "test2",
+        answers: {
+            A: "test2",
+            B: "test2",
+            C: "test2",
+            D: "test2",
         },
-        correctAnswer: "B"
+        correctAnswer: 'C'
     },
     {
-        question: "What is the chemical symbol for water?",
-        options: {
-            A: "H2O",
-            B: "CO2",
-            C: "O2"
+        question: "test3",
+        answers: {
+            A: "test3",
+            B: "test3",
+            C: "test3",
+            D: "test3",
         },
-        correctAnswer: "A"
+        correctAnswer: 'B'
     }
 ];
 
-const quizContainer = document.getElementById("quiz-container");
-const questionElement = document.getElementById("question");
-const optionAElement = document.getElementById("optionA");
-const optionBElement = document.getElementById("optionB");
-const optionCElement = document.getElementById("optionC");
-const resultElement = document.getElementById("result");
-const quizForm = document.getElementById("quiz-form");
-
-let currentQuestionIndex = 0;
 let score = 0;
+let currentQuestionIndex = 0;
 
-function loadQuestion() {
-    const currentQuestion = quizData[currentQuestionIndex];
-    questionElement.textContent = currentQuestion.question;
-    optionAElement.textContent = currentQuestion.options.A;
-    optionBElement.textContent = currentQuestion.options.B;
-    optionCElement.textContent = currentQuestion.options.C;
-}
+const startQuiz = () => {
+    if (currentQuestionIndex < quizQuestions.length) {
+        const currentQuestion = quizQuestions[currentQuestionIndex];
+        const quizContainer = document.getElementById("quiz-content");
+        const answers = currentQuestion.answers;
 
-function checkAnswer(answer) {
-    const currentQuestion = quizData[currentQuestionIndex];
-    if (answer === currentQuestion.correctAnswer) {
-        score++;
-    }
-}
+        const quizHTML = `
+            <p>Question ${currentQuestionIndex + 1}:</p>
+            <h1>${currentQuestion.question}</h1>
+            <form id="quiz-form">
+                ${Object.keys(answers).map((key) => `
+                    <label>
+                        <input type="radio" name="answer" value="${key}">
+                        <span>${answers[key]}</span>
+                    </label><br>
+                `).join('')}
+                <br>
+                <button type="submit">Submit</button>
+            </form>
+        `;
 
-function reset() {
-    currentQuestionIndex = 0;
-    resultElement.innerHTML = ""
-    loadQuestion();
-}
+        quizContainer.innerHTML = quizHTML;
 
-function showResult() {
-    resultElement.innerHTML = `You scored ${score} out of ${quizData.length}!
-    <br>
-    Would you like to try again? <button id="resetButton">Reset</button>`;
-
-    const resetButton = document.getElementById("resetButton");
-    resetButton.addEventListener("click", reset);
-}
-
-loadQuestion();
-
-quizForm.addEventListener("submit", function (event) {
-    event.preventDefault();
-    const selectedAnswer = document.querySelector('input[name="answer"]:checked');
-    if (!selectedAnswer) {
-        alert("Please select an answer.");
-        return;
-    }
-    const answer = selectedAnswer.value;
-    checkAnswer(answer);
-    currentQuestionIndex++;
-    if (currentQuestionIndex < quizData.length) {
-        loadQuestion();
+        const quizForm = document.getElementById("quiz-form");
+        quizForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+            if (!selectedAnswer) {
+                alert("Please select an answer.");
+                return;
+            }
+            const answer = selectedAnswer.value;
+            checkAnswer(answer);
+        });
     } else {
         showResult();
     }
-});
+}
+
+const checkAnswer = (answer) => {
+    const currentQuestion = quizQuestions[currentQuestionIndex];
+    if (answer === currentQuestion.correctAnswer) {
+        score++;
+    }
+    currentQuestionIndex++;
+    startQuiz();
+}
+const reset = () => {
+    score = 0;
+    currentQuestionIndex = 0;
+    startQuiz();
+}
+
+const showResult = () => {
+    let highScore = localStorage.getItem("highscore");
+    if (highScore === null) {
+        highScore = 0;
+      }
+    const quizContainer = document.getElementById("quiz-content");
+    quizContainer.innerHTML = `<p>You scored ${score} out of ${quizQuestions.length}!</p> <button id="again">Try Again</button>`;
+    if(score > highScore) {
+        localStorage.setItem("Highscore", score);
+        alert(" You got the new highscore of " + score + " !");
+    }else {
+        alert(" You did not beat the high score of " + highScore + ". Maybe next time!");
+    }
+
+    const againEL = document.getElementById("again");
+    againEL.addEventListener('click', reset);
+}
+
+const highScore = () => {
+    localStorage.setItem("highscore", score);
+}
+
+startQuiz();
